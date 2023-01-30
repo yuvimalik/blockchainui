@@ -1,118 +1,44 @@
-import 'package:blockchain/mining.dart';
-import 'package:blockchain/transactions.dart';
+import 'package:blockchain/main.dart';
 import 'package:blockchain/voting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
-
-
-
-
-
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  runApp(const MyApp());
-
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-
-
-
-
-
-
-  // This widget is the root of your application.
+class Mining extends StatefulWidget{
   @override
-  Widget build(BuildContext context) {
-
-
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-      primarySwatch: MaterialColor(0xFF000000,
-        <int, Color>{
-          50: Color(0xFF000000),
-          100: Color(0xFF000000),
-          200: Color(0xFF000000),
-          300: Color(0xFF000000),
-          400: Color(0xFF000000),
-          500: Color(0xFF000000),
-          600: Color(0xFF000000),
-          700: Color(0xFF000000),
-          800: Color(0xFF000000),
-          900: Color(0xFF000000),
-        },),
-      textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Colors.transparent
-      ),
-    ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  State<Mining> createState() => Miningy();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void changebalance(newbalance){
-    setState(() {
-      balance = newbalance;
-    });
-
-
-  }
-
-
+class Miningy extends State<Mining> {
 
   static const colorpurple = Color(0xff282032);
   static const colorblue = Colors.black54;
   static const colorpurple2 = Color(0xff65507C);
   static const colorblue2 = Color(0xff376995);
-  var isShowingMainData = true;
-  String balance = "19.00";
+
+  TextEditingController addresscontroller = TextEditingController();
+  TextEditingController valuecontroller = TextEditingController();
+
+  var address = "";
+  var vale = "";
+
+  void onpressed(add, value){
+    address = add;
+    vale = value;
+  }
+
   void updatetransactions(list){
     listoftransactions = list;
   }
 
-  List listoftransactions = [[10, "Yuv", "James"],[10, "James", "Yuv"], ];
+  static List listoftransactions = [[10, "Yuv", "James"],[10, "James", "Yuv"], ];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    /*Firebase.initializeApp().whenComplete(() {
-      print("completed");
-      setState(() {});
-    });*/
-  }
+  var mining = false;
+
 
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.black87,
 
@@ -149,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         'Home',
                         style: GoogleFonts.sora(
 
-                          fontSize: 12, color: Colors.white
+                            fontSize: 12, color: Colors.white
 
 
                         ),
@@ -160,11 +86,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () {
                         // Update the state of the app.
                         // ...
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  MyHomePage(title: "yo")),
+                        );
                       },
                     ),
 
 
-                    ),
+                  ),
 
                   Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -173,8 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         'Transactions',
                         style: GoogleFonts.sora(
 
-                          fontSize: 12,
-                          color: Colors.white
+                            fontSize: 12,
+                            color: Colors.white
 
                         ),
                       ),
@@ -182,10 +112,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () {
                         // Update the state of the app.
                         // ...
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  SecondRoute()),
-                        );
                       },
                     ),
                   ),
@@ -210,27 +136,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: ListTile(
-                      title: Text(
-                        'Mining',
-                        style: GoogleFonts.sora(
-
-                            fontSize: 12,
-                            color: Colors.white
-
-                        ),
-                      ),
-
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  Mining()),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -241,74 +146,59 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Align(
                     alignment: Alignment.topRight,
                     child: Container(
-                      height: MediaQuery.of(context).size.height*0.5,
+                      height: MediaQuery.of(context).size.height*0.4,
                       width: MediaQuery.of(context).size.width*0.7,
                       decoration: BoxDecoration(
-                        color: colorblue.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(15)
+                          color: colorblue.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(15)
                       ),
                       child: Column(
                         children: [
                           Align(
-                            alignment: Alignment.topLeft,
+                            alignment: Alignment.center,
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 25, horizontal: 25),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    child: Text(
-                                      "Balance",
-                                      style: GoogleFonts.sora(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    mining = true;
+                                  });
 
-
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.3, 0, 0, 0),
-                                    child: Align(
-                                      alignment: Alignment.topRight,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.refresh,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: (){
-                                          changebalance(balance);//checkbalance
-
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
-                              child: Text(
-                                "$balance",
-                                style: GoogleFonts.sora(
-                                    fontSize: 22,
-
-                                    color: Colors.white
-
-
+                                },
+                                child: Text(
+                                  "Mine",
+                                  style: GoogleFonts.sora(fontSize: 30, color: Colors.white),
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
+                              )
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: mining == true?Icon(
+                                Icons.downloading,
+                                color: Colors.white,
+                              ):Container(),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: mining == true?Text(
+                                "Mining in progress",
+                                style: GoogleFonts.sora(
+                                  color: Colors.white,
+                                  fontSize: 15
+                                ),
+                              ):Container(),
+                            ),
+                          )
+
+
+
+
 
 
                         ],
@@ -321,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Container(
-                    height: MediaQuery.of(context).size.height * 0.37,
+                    height: MediaQuery.of(context).size.height * 0.47,
                     width: MediaQuery.of(context).size.width*0.73,
 
 
@@ -334,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 (MediaQuery.of(context).size.height / 6),
 
                           ),
-                          itemCount: (SecondRoute.listoftransactions.length).toInt(),
+                          itemCount: (listoftransactions.length).toInt(),
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.all(3.0),
@@ -348,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "Amount : ${SecondRoute.listoftransactions[index][0]}",
+                                      "${listoftransactions[index][0]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -356,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     Text(
-                                      "Sender : ${SecondRoute.listoftransactions[index][1]}",
+                                      "${listoftransactions[index][1]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -364,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                     Text(
-                                      "Recipient : ${SecondRoute.listoftransactions[index][2]}",
+                                      "${listoftransactions[index][2]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -382,11 +272,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             )
+
           ],
         ),
       ),
     );
   }
 }
-
-

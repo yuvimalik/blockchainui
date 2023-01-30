@@ -1,4 +1,5 @@
 import 'package:blockchain/main.dart';
+import 'package:blockchain/mining.dart';
 import 'package:blockchain/voting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,21 @@ class SecondRoute extends StatelessWidget {
 
   TextEditingController addresscontroller = TextEditingController();
   TextEditingController valuecontroller = TextEditingController();
+
+  var address = "";
+  var vale = "";
+
+  void onpressed(add, value){
+    address = add;
+    vale = value;
+  }
+
+  void updatetransactions(list){
+    listoftransactions = list;
+  }
+
+  static List listoftransactions = [[10, "Yuv", "James"],[10, "James", "Yuv"], ];
+
 
 
   @override
@@ -110,6 +126,27 @@ class SecondRoute extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) =>  Voting()),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ListTile(
+                      title: Text(
+                        'Mining',
+                        style: GoogleFonts.sora(
+
+                            fontSize: 12,
+                            color: Colors.white
+
+                        ),
+                      ),
+
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  Mining()),
                         );
                       },
                     ),
@@ -228,6 +265,7 @@ class SecondRoute extends StatelessWidget {
                               child: TextButton(
                                 onPressed: (){
                                   print('You sent ${valuecontroller.text} coins to ${addresscontroller.text}');
+                                  onpressed(addresscontroller.text, valuecontroller.text);
                                 },
                                 child: Text(
                                   "Send",
@@ -263,7 +301,7 @@ class SecondRoute extends StatelessWidget {
                                 (MediaQuery.of(context).size.height / 6),
 
                           ),
-                          itemCount: 6,
+                          itemCount: (listoftransactions.length).toInt(),
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.all(3.0),
@@ -276,12 +314,8 @@ class SecondRoute extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Icon(
-                                      Icons.payment_outlined,
-                                      color: Colors.white,
-                                    ),
                                     Text(
-                                      "Transaction",
+                                      "${listoftransactions[index][0]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -289,7 +323,15 @@ class SecondRoute extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      "Value",
+                                      "${listoftransactions[index][1]}",
+                                      style: GoogleFonts.sora(
+                                          fontSize: 10,
+                                          color: Colors.white
+
+                                      ),
+                                    ),
+                                    Text(
+                                      "${listoftransactions[index][2]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white

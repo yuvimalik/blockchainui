@@ -1,9 +1,12 @@
 import 'package:blockchain/main.dart';
+import 'package:blockchain/mining.dart';
 import 'package:blockchain/transactions.dart';
 import 'package:blockchain/graph.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 
@@ -26,10 +29,88 @@ class ThirdRoute extends State<Voting> {
 
   int upvotes = 0;
   int downvote = 0;
+  var allData = [];
+  //
+
+  Future<void> getData() async {
+    //Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference voting = FirebaseFirestore.instance.collection('Voting');
+
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await voting.get();
+
+    // Get data from docs and convert map to List
+    setState(() {
+      allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+      upvotes = allData[0]["upvotes"];
+    });
+
+
+
+    print(allData);
+    //print(voting.doc().id);
+  }
+
+  Future<void> sendDataVote(vote) async {
+    //Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference voting = FirebaseFirestore.instance.collection('Voting');
+
+    // Get docs from collection reference
+
+    voting.add({"Vote":vote, "upvotes":0});
+
+
+
+    // Get data from docs and convert map to List
+    getData();
+
+
+
+    print(allData);
+  }
+
+  Future<void> updateupvotes(vote, doc) async {
+    //Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference voting = FirebaseFirestore.instance.collection('Voting');
+
+    // Get docs from collection reference
+
+    voting.doc().id;
+
+
+    // Get data from docs and convert map to List
+    getData();
+
+
+
+    print(allData);
+  }
+
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+    /*Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });*/
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
+    getData();
+
+
+
     return Scaffold(
       backgroundColor: Colors.black87,
 
@@ -126,6 +207,27 @@ class ThirdRoute extends State<Voting> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ListTile(
+                      title: Text(
+                        'Mining',
+                        style: GoogleFonts.sora(
+
+                            fontSize: 12,
+                            color: Colors.white
+
+                        ),
+                      ),
+
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  Mining()),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -176,6 +278,7 @@ class ThirdRoute extends State<Voting> {
                                     children: [
                                       Container(
 
+
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(6, 1, 6, 5),
                                           child: TextField(
@@ -192,41 +295,13 @@ class ThirdRoute extends State<Voting> {
                                           ),
                                         ),
                                         height: MediaQuery.of(context).size.height*0.1,
-                                        width: MediaQuery.of(context).size.width*0.25,
+                                        width: MediaQuery.of(context).size.width*0.5,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(5),
                                           color: Colors.grey[800],
                                         ),
                                       ),
-                                      Container(
 
-                                        child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(6, 1, 6, 5),
-                                          child: TextField(
-                                            style: GoogleFonts.sora(color: Colors.white, fontSize: 12),
-                                            controller: valuecontroller,
-                                            //maxLength: 50,
-                                            decoration: InputDecoration(
-                                                label: Text("Username", style: GoogleFonts.sora(fontSize: 12, color: Colors.white),),
-                                                suffixIcon: Icon(Icons.drive_file_rename_outline, color: Colors.white,),
-                                              enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.transparent), //<-- SEE HERE
-                                              ),
-                                              focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.transparent), //<-- SEE HERE
-                                              ),
-                                              focusColor: Colors.black12,
-
-                                            ),
-                                          ),
-                                        ),
-                                        height: MediaQuery.of(context).size.height*0.1,
-                                        width: MediaQuery.of(context).size.width*0.25,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: Colors.grey[800],
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 )
@@ -238,7 +313,9 @@ class ThirdRoute extends State<Voting> {
                               alignment: Alignment.bottomCenter,
                               child: TextButton(
                                 onPressed: (){
-                                  print('You sent ${valuecontroller.text} coins to ${addresscontroller.text}');
+                                  sendDataVote(addresscontroller.text);
+                                  getData();
+
                                 },
                                 child: Text(
                                   "Send",
@@ -274,7 +351,7 @@ class ThirdRoute extends State<Voting> {
                                 (MediaQuery.of(context).size.height / 4),
 
                           ),
-                          itemCount: 3,
+                          itemCount: allData.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.all(3.0),
@@ -303,7 +380,7 @@ class ThirdRoute extends State<Voting> {
 
                                                 },
                                               ),
-                                              Text("$upvotes", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
+                                              Text("${allData[index]["upvotes"]}", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
                                             ],
                                           ),
                                           Icon(
@@ -321,7 +398,7 @@ class ThirdRoute extends State<Voting> {
                                                   });
                                                 },
                                               ),
-                                              Text("$downvote", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
+                                              Text("", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
                                             ],
                                           ),
 
@@ -330,21 +407,14 @@ class ThirdRoute extends State<Voting> {
                                       ),
                                     ),
                                     Text(
-                                      "Idea",
+                                      "${allData[index]["Vote"]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
 
                                       ),
                                     ),
-                                    Text(
-                                      "Username",
-                                      style: GoogleFonts.sora(
-                                          fontSize: 10,
-                                          color: Colors.white
 
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),
