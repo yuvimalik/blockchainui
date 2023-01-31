@@ -48,9 +48,11 @@ class ThirdRoute extends State<Voting> {
 
 
 
-    print(allData);
+    //print(allData);
     //print(voting.doc().id);
   }
+
+  Map votesdoc = {};
 
   Future<void> sendDataVote(vote) async {
     //Firebase.initializeApp();
@@ -59,7 +61,9 @@ class ThirdRoute extends State<Voting> {
 
     // Get docs from collection reference
 
-    voting.add({"Vote":vote, "upvotes":0});
+    voting.add({"Vote":vote, "upvotes":0}).then((value) => print(value.parent.path));
+    print("VOTES DOCC    $votesdoc");
+
 
 
 
@@ -68,7 +72,7 @@ class ThirdRoute extends State<Voting> {
 
 
 
-    print(allData);
+    //print(allData);
   }
 
   Future<void> updateupvotes(vote, doc) async {
@@ -86,8 +90,13 @@ class ThirdRoute extends State<Voting> {
 
 
 
-    print(allData);
+    //print(allData);
   }
+
+  var isclicked = false;
+  var clickedindex;
+
+
 
 
 
@@ -375,12 +384,15 @@ class ThirdRoute extends State<Voting> {
                                                 child: Icon(Icons.arrow_drop_up, color: Colors.white),
                                                 onTap: (){
                                                   setState(() {
-                                                    upvotes+=1;
+                                                    isclicked = true;
                                                   });
+                                                  clickedindex = index;
+                                                  //var documentid = FirebaseFirestore.instance.collection("Voting");
+
 
                                                 },
                                               ),
-                                              Text("${allData[index]["upvotes"]}", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
+                                              Text("${isclicked == false && index == clickedindex?allData[index]["upvotes"]:allData[index]["upvotes"]+1}", style: GoogleFonts.sora(fontSize: 8, color: Colors.white),)
                                             ],
                                           ),
                                           Icon(
@@ -388,7 +400,7 @@ class ThirdRoute extends State<Voting> {
                                             color: Colors.white,
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               GestureDetector(
                                                 child: Icon(Icons.arrow_drop_down, color: Colors.white),
@@ -406,12 +418,15 @@ class ThirdRoute extends State<Voting> {
                                         ],
                                       ),
                                     ),
-                                    Text(
-                                      "${allData[index]["Vote"]}",
-                                      style: GoogleFonts.sora(
-                                          fontSize: 10,
-                                          color: Colors.white
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                      child: Text(
+                                        "${allData[index]["Vote"]}",
+                                        style: GoogleFonts.sora(
+                                            fontSize: 10,
+                                            color: Colors.white
 
+                                        ),
                                       ),
                                     ),
 

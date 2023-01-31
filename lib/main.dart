@@ -299,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Text(
                                 "$balance",
                                 style: GoogleFonts.sora(
-                                    fontSize: 22,
+                                    fontSize: 42,
 
                                     color: Colors.white
 

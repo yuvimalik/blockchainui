@@ -1,4 +1,5 @@
 import 'package:blockchain/main.dart';
+import 'package:blockchain/transactions.dart';
 import 'package:blockchain/voting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -158,16 +159,30 @@ class Miningy extends State<Mining> {
                             alignment: Alignment.center,
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 25, horizontal: 25),
-                              child: TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    mining = true;
-                                  });
+                              child: Container(
+                                height: MediaQuery.of(context).size.height*0.1,
+                                width: MediaQuery.of(context).size.height*0.5,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topRight,
+                                      end: Alignment.bottomLeft,
+                                      colors: [
+                                        Colors.grey,
+                                      Colors.black12]
+                                    ),
 
-                                },
-                                child: Text(
-                                  "Mine",
-                                  style: GoogleFonts.sora(fontSize: 30, color: Colors.white),
+                                ),
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      mining = true;
+                                    });
+
+                                  },
+                                  child: Text(
+                                    "Mine",
+                                    style: GoogleFonts.sora(fontSize: 30, color: Colors.white),
+                                  ),
                                 ),
                               )
                             ),
@@ -224,7 +239,7 @@ class Miningy extends State<Mining> {
                                 (MediaQuery.of(context).size.height / 6),
 
                           ),
-                          itemCount: (listoftransactions.length).toInt(),
+                          itemCount: (SecondRoute.listoftransactions.length).toInt(),
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.all(3.0),
@@ -238,7 +253,7 @@ class Miningy extends State<Mining> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "${listoftransactions[index][0]}",
+                                      "${SecondRoute.listoftransactions[index][0]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -246,7 +261,7 @@ class Miningy extends State<Mining> {
                                       ),
                                     ),
                                     Text(
-                                      "${listoftransactions[index][1]}",
+                                      "${SecondRoute.listoftransactions[index][1]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
@@ -254,7 +269,7 @@ class Miningy extends State<Mining> {
                                       ),
                                     ),
                                     Text(
-                                      "${listoftransactions[index][2]}",
+                                      "${SecondRoute.listoftransactions[index][2]}",
                                       style: GoogleFonts.sora(
                                           fontSize: 10,
                                           color: Colors.white
